@@ -1,9 +1,12 @@
-import { Hono } from 'hono'
+import { Hono } from "hono";
 
-const app = new Hono()
+const BASE_URL = "/api/v1";
 
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+const app = new Hono().basePath(BASE_URL);
 
-export default app
+// export default {
+//   port: 8080,
+//   fetch: app.fetch,
+// };
+
+export default app;
