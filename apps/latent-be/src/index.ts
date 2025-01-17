@@ -1,12 +1,11 @@
 import { Hono } from "hono";
+import router from "./routes/router";
 
-const BASE_URL = "/api/v1";
+const app = new Hono();
 
-const app = new Hono().basePath(BASE_URL);
+app.route("", router);
 
-// export default {
-//   port: 8080,
-//   fetch: app.fetch,
-// };
-
-export default app;
+export default {
+  port: 8080,
+  fetch: app.fetch,
+};

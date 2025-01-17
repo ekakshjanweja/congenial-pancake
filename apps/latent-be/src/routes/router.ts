@@ -1,6 +1,12 @@
-import app from "..";
-import { HEALTH_ROUTE_NAME, healthRouter } from "./v1/health";
-import { USER_ROUTE_NAME, userRouter } from "./v1/user";
+import { Hono } from "hono";
+import { health } from "../v1/endpoints/health-check/health";
+import { user } from "../v1/endpoints/user/user";
 
-app.route(HEALTH_ROUTE_NAME, healthRouter);
-app.route(USER_ROUTE_NAME, userRouter);
+const BASE_URL = "/api/v1";
+
+const router = new Hono().basePath(BASE_URL);
+
+router.route("/health", health);
+router.route("/user", user);
+
+export default router;
