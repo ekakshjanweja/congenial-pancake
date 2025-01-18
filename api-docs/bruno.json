@@ -1,6 +1,6 @@
 {
   "version": "1",
-  "name": "latent-api-docs",
+  "name": "latent-app",
   "type": "collection",
   "ignore": [
     "node_modules",
