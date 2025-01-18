@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { generateToken, verifyToken } from "authenticator";
 import { db, user, UserInsert } from "@repo/db";
 import { eq } from "drizzle-orm";
+import { Status } from "../../../enums/status";
 
 export const userRouter = new Hono();
 
@@ -37,22 +38,73 @@ userRouter.post("/signup", async (c) => {
 userRouter.post("/signup/verify", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
+  const username = body.username as string;
   const otp = body.totp as string;
 
-  console.log(phoneNumber, otp);
-
   if (!otp) {
-    return c.json({ message: "OTP is required" }, 400);
+    return c.json(
+      {
+        data: {
+          message: "OTP is required",
+        },
+        status: Status.error,
+      },
+      400
+    );
+  }
+
+  if (!phoneNumber) {
+    return c.json(
+      {
+        data: {
+          message: "Phone Number is required",
+        },
+        status: Status.error,
+      },
+      400
+    );
+  }
+
+  if (!username) {
+    return c.json(
+      {
+        data: {
+          message: "User Name is required",
+        },
+        status: Status.error,
+      },
+      400
+    );
   }
 
   const isValid = verifyToken(phoneNumber + "AUTH", otp);
 
   if (!isValid) {
-    return c.json({ message: "Invalid OTP" }, 400);
+    return c.json(
+      {
+        data: {
+          message: "Invalid OTP provided",
+        },
+        status: Status.error,
+      },
+      400
+    );
   }
 
-  //TODO: Set verified user in db
-  //TODO: Also return the newly created user object
+  await db
+    .update(user)
+    .set({ username, verified: true })
+    .where(eq(user.phoneNumber, phoneNumber));
 
-  return c.json({ message: "User verified" }, 200);
+  const updatedUser = (
+    await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
+  )[0];
+
+  return c.json(
+    {
+      data: updatedUser,
+      status: Status.success,
+    },
+    200
+  );
 });
