@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { generateToken, verifyToken } from "authenticator";
-import { db, user } from "@repo/db";
+import { db, user, UserInsert } from "@repo/db";
 import { eq } from "drizzle-orm";
 
 export const userRouter = new Hono();
@@ -10,18 +10,28 @@ userRouter.post("/signup", async (c) => {
   const phoneNumber = body.phoneNumber as string;
   const topt = generateToken(phoneNumber + "AUTH");
 
-  const users = await db
-    .select()
-    .from(user)
-    .where(eq(user.phoneNumber, phoneNumber));
+  const exisitingUser = (
+    await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
+  )[0];
 
-  // if (!exisitingUser) {
-  //   return c.json({ message: "User already exists" }, 400);
-  // }
+  if (exisitingUser) {
+    return c.json({ message: "User already exists" }, 400);
+  }
 
-  //TODO: Send OTP to phoneNumber
+  if (process.env.NODE_ENV === "production") {
+    //TODO: Send OTP to phoneNumber
+  }
 
-  return c.json({ topt }, 200);
+  await db.insert(user).values({
+    phoneNumber,
+    username: "Anonymous",
+  });
+
+  const newUser = (
+    await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
+  )[0];
+
+  return c.json({ user: newUser, topt }, 200);
 });
 
 userRouter.post("/signup/verify", async (c) => {

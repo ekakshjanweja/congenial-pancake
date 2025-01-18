@@ -1,5 +1,10 @@
 import { Hono } from "hono";
+import { config } from "dotenv";
 import router from "./routes/router";
+
+config({
+  path: "../../../.env",
+});
 
 const app = new Hono();
 
