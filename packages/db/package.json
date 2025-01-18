@@ -1,7 +1,10 @@
 {
-  "name": "db",
+  "name": "@repo/db",
   "module": "index.ts",
   "type": "module",
+  "exports": {
+    ".": "./index.ts"
+  },
   "scripts": {
     "generate": "bun drizzle-kit generate --config=drizzle.config.ts",
     "push": "bun drizzle-kit push --config=drizzle.config.ts",

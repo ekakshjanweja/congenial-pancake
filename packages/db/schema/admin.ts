@@ -12,3 +12,6 @@ export const admin = pgTable("admin", {
 export const adminRelations = relations(admin, ({ many }) => ({
   event: many(event),
 }));
+
+export type AdminSelect = typeof admin.$inferSelect;
+export type AdminInsert = typeof admin.$inferInsert;

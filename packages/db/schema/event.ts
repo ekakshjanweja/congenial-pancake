@@ -21,3 +21,6 @@ export const eventRelations = relations(event, ({ one, many }) => ({
   booking: many(booking),
   payment: many(payment),
 }));
+
+export type EventSelect = typeof event.$inferSelect;
+export type EventInsert = typeof event.$inferInsert;

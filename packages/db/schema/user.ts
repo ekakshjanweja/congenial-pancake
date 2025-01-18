@@ -6,7 +6,7 @@ import { payment } from "./payment";
 export const user = pgTable("user", {
   id: uuid("id").defaultRandom(),
   phoneNumber: text("phone_number").primaryKey(),
-  username: text("username").notNull(),
+  username: text("username").notNull().default(""),
   verified: boolean("verified").notNull().default(false),
 });
 

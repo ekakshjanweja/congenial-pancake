@@ -21,3 +21,6 @@ export const bookingRelations = relations(booking, ({ one, many }) => ({
   }),
   seat: many(seat),
 }));
+
+export type BookingSelect = typeof booking.$inferSelect;
+export type BookingInsert = typeof booking.$inferInsert;

@@ -13,3 +13,6 @@ export const seatType = pgTable("seat_type", {
 export const seatTypeRelations = relations(seatType, ({ many }) => ({
   seat: many(seat),
 }));
+
+export type SeatTypeSelect = typeof seatType.$inferSelect;
+export type SeatTypeInsert = typeof seatType.$inferInsert;

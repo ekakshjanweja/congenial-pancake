@@ -15,6 +15,20 @@
       "when": 1737215510098,
       "tag": "0001_tan_inertia",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737215915747,
+      "tag": "0002_gigantic_moira_mactaggert",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1737216627562,
+      "tag": "0003_perpetual_night_nurse",
+      "breakpoints": true
     }
   ]
 }

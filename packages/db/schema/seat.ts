@@ -16,3 +16,6 @@ export const seatRelations = relations(seat, ({ one }) => ({
   }),
   booking: one(booking),
 }));
+
+export type SeatSelect = typeof seat.$inferSelect;
+export type SeatInsert = typeof seat.$inferInsert;

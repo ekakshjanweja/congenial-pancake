@@ -26,3 +26,6 @@ export const paymentRelations = relations(payment, ({ one }) => ({
     references: [event.id],
   }),
 }));
+
+export type PaymentSelect = typeof payment.$inferSelect;
+export type PaymentInsert = typeof payment.$inferInsert;
