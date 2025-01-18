@@ -4,9 +4,11 @@ import { generateToken, verifyToken } from "authenticator";
 export const user = new Hono();
 
 user.post("/signup", async (c) => {
-  const body = await c.req.parseBody();
+  const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
   const topt = generateToken(phoneNumber + "AUTH");
+
+  console.log(phoneNumber);
 
   //TODO: Send OTP to phoneNumber
 
@@ -14,9 +16,15 @@ user.post("/signup", async (c) => {
 });
 
 user.post("/signup/verify", async (c) => {
-  const body = await c.req.parseBody();
+  const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
-  const otp = body.topt as string;
+  const otp = body.totp as string;
+
+  console.log(phoneNumber, otp);
+
+  if (!otp) {
+    return c.json({ message: "OTP is required" }, 400);
+  }
 
   const isValid = verifyToken(phoneNumber + "AUTH", otp);
 
