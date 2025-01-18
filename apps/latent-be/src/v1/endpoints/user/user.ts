@@ -3,6 +3,7 @@ import { generateToken, verifyToken } from "authenticator";
 import { db, user, UserInsert } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { Status } from "../../../enums/status";
+import { sign } from "hono/jwt";
 
 export const userRouter = new Hono();
 
@@ -100,9 +101,19 @@ userRouter.post("/signup/verify", async (c) => {
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
   )[0];
 
+  //TODO: Create acccess token and refresh token
+
+  const payload = {
+    sub: updatedUser.id,
+    role: "user",
+    exp: Math.floor(Date.now() / 1000) + 60 * 60,
+  };
+
+  const token = await sign(payload, "secret");
+
   return c.json(
     {
-      data: updatedUser,
+      data: { updatedUser, token },
       status: Status.success,
     },
     200
