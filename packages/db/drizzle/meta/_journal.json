@@ -8,6 +8,13 @@
       "when": 1737206170741,
       "tag": "0000_gray_galactus",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1737215510098,
+      "tag": "0001_tan_inertia",
+      "breakpoints": true
     }
   ]
 }
