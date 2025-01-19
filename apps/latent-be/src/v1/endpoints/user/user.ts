@@ -4,6 +4,7 @@ import { db, user, UserInsert } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { Status } from "../../../enums/status";
 import { sign } from "hono/jwt";
+import { sendMessage } from "../../../utils/twilio";
 
 export const userRouter = new Hono();
 
@@ -20,10 +21,6 @@ userRouter.post("/signup", async (c) => {
     return c.json({ message: "User already exists" }, 400);
   }
 
-  if (process.env.NODE_ENV === "production") {
-    //TODO: Send OTP to phoneNumber
-  }
-
   await db.insert(user).values({
     phoneNumber,
     username: "Anonymous",
@@ -32,6 +29,12 @@ userRouter.post("/signup", async (c) => {
   const newUser = (
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
   )[0];
+
+  if (process.env.NODE_ENV === "production") {
+    //TODO: Send OTP to phoneNumber
+  }
+
+  await sendMessage(`Welcome to Latent - Your OTP is ${topt}`, phoneNumber);
 
   return c.json({ user: newUser, topt }, 200);
 });

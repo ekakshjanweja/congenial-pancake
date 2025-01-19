@@ -10,7 +10,7 @@ if (!accountId || !authToken) {
   );
 }
 
-async function sendMessage(body: string, to: string) {
+export async function sendMessage(body: string, to: string) {
   const message = await twilioClient.messages.create({
     body,
     to,
