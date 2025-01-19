@@ -7,6 +7,7 @@ export const seat = pgTable("seat", {
   id: uuid("id").defaultRandom().primaryKey(),
   type: uuid("seat_type").notNull(),
   qr: text("qr").notNull(),
+  bookingId: uuid("booking_id").notNull(),
 });
 
 export const seatRelations = relations(seat, ({ one }) => ({
@@ -14,7 +15,10 @@ export const seatRelations = relations(seat, ({ one }) => ({
     fields: [seat.type],
     references: [seatType.id],
   }),
-  booking: one(booking),
+  booking: one(booking, {
+    fields: [seat.bookingId],
+    references: [booking.id],
+  }),
 }));
 
 export type SeatSelect = typeof seat.$inferSelect;

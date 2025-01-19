@@ -1,0 +1,1 @@
+ALTER TABLE "seat" DROP COLUMN "booking_id";

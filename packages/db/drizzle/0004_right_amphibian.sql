@@ -1,0 +1,1 @@
+ALTER TABLE "seat" ADD COLUMN "booking_id" uuid NOT NULL;
