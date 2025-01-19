@@ -1,5 +1,6 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import { schema } from "./schema/schema";
+import { config } from "dotenv";
 
 export * from "./schema/user";
 export * from "./schema/admin";
