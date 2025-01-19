@@ -60,6 +60,8 @@ export async function createToken(user: UserSelect) {
   };
 
   await db.insert(tokens).values(newToken);
+
+  //TODO: Set cookies in endpoint
 }
 
 export async function refreshAccessToken(refreshToken: string) {}
