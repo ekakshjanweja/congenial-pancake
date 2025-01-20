@@ -31,10 +31,10 @@ userRouter.post("/signup", async (c) => {
   )[0];
 
   if (process.env.NODE_ENV === "production") {
-    //TODO: Send OTP to phoneNumber
+    await sendMessage(`Welcome to Latent - Your OTP is ${topt}`, phoneNumber);
+  } else {
+    console.log(`Welcome to Latent - Your OTP is ${topt}`);
   }
-
-  await sendMessage(`Welcome to Latent - Your OTP is ${topt}`, phoneNumber);
 
   return c.json({ user: newUser, topt }, 200);
 });
