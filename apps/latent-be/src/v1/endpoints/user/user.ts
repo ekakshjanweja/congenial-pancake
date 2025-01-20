@@ -36,6 +36,8 @@ userRouter.post("/signup", async (c) => {
     console.log(`Welcome to Latent - Your OTP is ${topt}`);
   }
 
+  //TODO: Remove totp from response
+
   return c.json({ user: newUser, topt }, 200);
 });
 
