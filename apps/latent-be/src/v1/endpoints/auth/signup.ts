@@ -1,14 +1,12 @@
-import { Hono } from "hono";
 import { generateToken, verifyToken } from "authenticator";
 import { db, user } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { Status } from "../../../enums/status";
 import { sign } from "hono/jwt";
 import { sendMessage } from "../../../utils/twilio";
+import { authRouter } from "./auth";
 
-export const userRouter = new Hono();
-
-userRouter.post("/signup", async (c) => {
+authRouter.post("/signup", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
   const topt = generateToken(phoneNumber + "AUTH");
@@ -41,7 +39,7 @@ userRouter.post("/signup", async (c) => {
   return c.json({ user: newUser, topt }, 200);
 });
 
-userRouter.post("/signup/verify", async (c) => {
+authRouter.post("/signup/verify", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
   const username = body.username as string;

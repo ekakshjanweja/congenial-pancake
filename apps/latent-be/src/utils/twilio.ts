@@ -11,11 +11,14 @@ if (!accountId || !authToken) {
 }
 
 export async function sendMessage(body: string, to: string) {
-  const message = await twilioClient.messages.create({
-    body,
-    to,
-    from: Bun.env.TWILIO_PHONE_NUMBER,
-  });
-
-  console.log(message.body);
+  try {
+    const message = await twilioClient.messages.create({
+      body,
+      to,
+      from: Bun.env.TWILIO_PHONE_NUMBER,
+    });
+  } catch (error) {
+    console.log(error);
+    throw new Error("Failed to send message");
+  }
 }
