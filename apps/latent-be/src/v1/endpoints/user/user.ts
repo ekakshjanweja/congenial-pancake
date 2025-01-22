@@ -1,6 +1,6 @@
 import { Hono } from "hono";
 import { generateToken, verifyToken } from "authenticator";
-import { db, user, UserInsert } from "@repo/db";
+import { db, user } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { Status } from "../../../enums/status";
 import { sign } from "hono/jwt";
@@ -105,6 +105,13 @@ userRouter.post("/signup/verify", async (c) => {
   const updatedUser = (
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
   )[0];
+
+  if (!updatedUser) {
+    return c.json({
+      data: { message: "User not found" },
+      status: Status.error,
+    });
+  }
 
   //TODO: Create acccess token and refresh token
 
