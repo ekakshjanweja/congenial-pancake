@@ -1,10 +1,14 @@
 import { generateToken, verifyToken } from "authenticator";
 import { db, user } from "@repo/db";
 import { eq } from "drizzle-orm";
-import { Status } from "../../../enums/status";
 import { sign } from "hono/jwt";
 import { sendMessage } from "../../../utils/twilio";
 import { authRouter } from "./auth";
+import {
+  errorResponse,
+  ErrorType,
+  successResponse,
+} from "../../../utils/api-response";
 
 authRouter.post("/signup", async (c) => {
   const body = await c.req.json();
@@ -16,7 +20,7 @@ authRouter.post("/signup", async (c) => {
   )[0];
 
   if (exisitingUser) {
-    return c.json({ message: "User already exists" }, 400);
+    return c.json(errorResponse(ErrorType.UserAlreadyExists), 400);
   }
 
   await db.insert(user).values({
@@ -36,7 +40,13 @@ authRouter.post("/signup", async (c) => {
 
   //TODO: Remove totp from response
 
-  return c.json({ user: newUser, topt }, 200);
+  return c.json(
+    successResponse({
+      user: newUser,
+      topt,
+    }),
+    200
+  );
 });
 
 authRouter.post("/signup/verify", async (c) => {
@@ -46,53 +56,21 @@ authRouter.post("/signup/verify", async (c) => {
   const otp = body.totp as string;
 
   if (!otp) {
-    return c.json(
-      {
-        data: {
-          message: "OTP is required",
-        },
-        status: Status.error,
-      },
-      400
-    );
+    return c.json(errorResponse(ErrorType.OTPRequired), 400);
   }
 
   if (!phoneNumber) {
-    return c.json(
-      {
-        data: {
-          message: "Phone Number is required",
-        },
-        status: Status.error,
-      },
-      400
-    );
+    return c.json(errorResponse(ErrorType.PhoneNumberRequired), 400);
   }
 
   if (!username) {
-    return c.json(
-      {
-        data: {
-          message: "User Name is required",
-        },
-        status: Status.error,
-      },
-      400
-    );
+    return c.json(errorResponse(ErrorType.UserNameRequired), 400);
   }
 
   const isValid = verifyToken(phoneNumber + "AUTH", otp);
 
   if (!isValid) {
-    return c.json(
-      {
-        data: {
-          message: "Invalid OTP provided",
-        },
-        status: Status.error,
-      },
-      400
-    );
+    return c.json(errorResponse(ErrorType.InvalidOTP), 400);
   }
 
   await db
@@ -105,10 +83,7 @@ authRouter.post("/signup/verify", async (c) => {
   )[0];
 
   if (!updatedUser) {
-    return c.json({
-      data: { message: "User not found" },
-      status: Status.error,
-    });
+    return c.json(errorResponse(ErrorType.UserNotFound), 400);
   }
 
   //TODO: Create acccess token and refresh token
@@ -121,11 +96,5 @@ authRouter.post("/signup/verify", async (c) => {
 
   const token = await sign(payload, "secret");
 
-  return c.json(
-    {
-      data: { updatedUser, token },
-      status: Status.success,
-    },
-    200
-  );
+  return c.json(successResponse({ updatedUser, token }), 200);
 });
