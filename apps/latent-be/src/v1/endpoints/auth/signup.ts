@@ -1,4 +1,3 @@
-import { generateToken, verifyToken } from "authenticator";
 import { db, user } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { sign } from "hono/jwt";
@@ -9,11 +8,13 @@ import {
   ErrorType,
   successResponse,
 } from "../../../utils/api-response";
+import { JWT_SECRET } from "../../../config/config";
+import { getTotp, TotpType, verifyTotp } from "../../../utils/totp";
 
 authRouter.post("/signup", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
-  const topt = generateToken(phoneNumber + "AUTH");
+  const topt = getTotp(phoneNumber, TotpType.auth);
 
   const exisitingUser = (
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
@@ -67,7 +68,7 @@ authRouter.post("/signup/verify", async (c) => {
     return c.json(errorResponse(ErrorType.UserNameRequired), 400);
   }
 
-  const isValid = verifyToken(phoneNumber + "AUTH", otp);
+  const isValid = verifyTotp(phoneNumber, TotpType.auth, otp);
 
   if (!isValid) {
     return c.json(errorResponse(ErrorType.InvalidOTP), 400);
@@ -94,7 +95,7 @@ authRouter.post("/signup/verify", async (c) => {
     exp: Math.floor(Date.now() / 1000) + 60 * 60,
   };
 
-  const token = await sign(payload, "secret");
+  const token = await sign(payload, JWT_SECRET!);
 
   return c.json(successResponse({ updatedUser, token }), 200);
 });
