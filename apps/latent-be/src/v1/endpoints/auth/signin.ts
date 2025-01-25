@@ -1,4 +1,4 @@
-import { authRouter } from "./auth";
+import { Hono } from "hono";
 import { db, user } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { sendMessage } from "../../../utils/twilio";
@@ -8,13 +8,15 @@ import {
   successResponse,
 } from "../../../utils/api-response";
 import { sign } from "hono/jwt";
-import { JWT_SECRET, TOTP_SECRET } from "../../../config/config";
+import { JWT_SECRET, NODE_ENV } from "../../../config/config";
 import { getTotp, TotpType, verifyTotp } from "../../../utils/totp";
 
-authRouter.post("/signin", async (c) => {
+export const signInAuthRouter = new Hono();
+
+signInAuthRouter.post("/", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
-  const totp = getTotp(phoneNumber, TotpType.auth);
+  const otp = getTotp(phoneNumber, TotpType.auth);
 
   const exisitingUser = (
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
@@ -24,24 +26,24 @@ authRouter.post("/signin", async (c) => {
     return c.json(errorResponse(ErrorType.UserNotFound), 400);
   }
 
-  if (process.env.NODE_ENV === "production") {
+  if (NODE_ENV === "production") {
     await sendMessage(
-      `Welcome back to Latent - Your OTP is ${totp}`,
+      `Welcome back to Latent - Your OTP is ${otp}`,
       phoneNumber
     );
+
+    return c.json(successResponse({ message: "OTP sent successfully" }), 200);
   } else {
-    console.log(`Welcome back to Latent - Your OTP is ${totp}`);
+    console.log(`Welcome back to Latent - Your OTP is ${otp}`);
+
+    return c.json(
+      successResponse({ message: "OTP sent successfully", otp }),
+      200
+    );
   }
-
-  //TODO: Remove totp from response
-
-  return c.json(
-    successResponse({ message: "OTP sent successfully", totp }),
-    200
-  );
 });
 
-authRouter.post("/signin/verify", async (c) => {
+signInAuthRouter.post("/verify", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
   const otp = body.otp as string;

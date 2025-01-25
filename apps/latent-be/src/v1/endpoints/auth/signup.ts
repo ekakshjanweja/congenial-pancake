@@ -1,20 +1,22 @@
+import { Hono } from "hono";
 import { db, user } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { sign } from "hono/jwt";
 import { sendMessage } from "../../../utils/twilio";
-import { authRouter } from "./auth";
 import {
   errorResponse,
   ErrorType,
   successResponse,
 } from "../../../utils/api-response";
-import { JWT_SECRET } from "../../../config/config";
+import { JWT_SECRET, NODE_ENV } from "../../../config/config";
 import { getTotp, TotpType, verifyTotp } from "../../../utils/totp";
 
-authRouter.post("/signup", async (c) => {
+export const signUpAuthRouter = new Hono();
+
+signUpAuthRouter.post("/", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
-  const topt = getTotp(phoneNumber, TotpType.auth);
+  const otp = getTotp(phoneNumber, TotpType.auth);
 
   const exisitingUser = (
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
@@ -33,28 +35,33 @@ authRouter.post("/signup", async (c) => {
     await db.select().from(user).where(eq(user.phoneNumber, phoneNumber))
   )[0];
 
-  if (process.env.NODE_ENV === "production") {
-    await sendMessage(`Welcome to Latent - Your OTP is ${topt}`, phoneNumber);
+  if (NODE_ENV === "production") {
+    await sendMessage(`Welcome to Latent - Your OTP is ${otp}`, phoneNumber);
+
+    return c.json(
+      successResponse({
+        user: newUser,
+      }),
+      200
+    );
   } else {
-    console.log(`Welcome to Latent - Your OTP is ${topt}`);
+    console.log(`Welcome to Latent - Your OTP is ${otp}`);
+
+    return c.json(
+      successResponse({
+        user: newUser,
+        otp,
+      }),
+      200
+    );
   }
-
-  //TODO: Remove totp from response
-
-  return c.json(
-    successResponse({
-      user: newUser,
-      topt,
-    }),
-    200
-  );
 });
 
-authRouter.post("/signup/verify", async (c) => {
+signUpAuthRouter.post("/verify", async (c) => {
   const body = await c.req.json();
   const phoneNumber = body.phoneNumber as string;
   const username = body.username as string;
-  const otp = body.totp as string;
+  const otp = body.otp as string;
 
   if (!otp) {
     return c.json(errorResponse(ErrorType.OTPRequired), 400);
