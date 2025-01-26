@@ -11,10 +11,14 @@ post {
 }
 
 headers {
-  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZjdkZTY0Yi02NTdhLTQwNmUtODEzMC0wMjg3NmYyYWU5MGMiLCJyb2xlIjoidXNlciIsImV4cCI6MTczNzkwNTY1Mn0.ARNHaHW9jfKlUYyf8Z0lYg6r0L4tbrUW4jIfYtPjGgY
-  ~Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWM2YjBjZC01MDM2LTRiMjgtYTU4YS1jZTJiMTk0MTUwNzAiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3Mzc5MDUyMDh9.IamHmZu2eRidmLLbNE4rX2_EdqlqL5DJnw_ta0DHSak
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWM2YjBjZC01MDM2LTRiMjgtYTU4YS1jZTJiMTk0MTUwNzAiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3Mzc5MTE3MzB9.r9Pquq3qIC-N3ez3RYgXOuLGERaODW0xyuno6oxb_gw
 }
 
 body:json {
-  {}
+  {
+    "location": {
+      "name": "Test Location",
+      "description": "Test Location Description",
+    }
+  }
 }

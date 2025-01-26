@@ -1,6 +1,8 @@
 import { Hono } from "hono";
 import { Roles } from "../../../enums/roles";
 import { Status } from "../../../enums/status";
+import { admin, AdminSelect, db, EventInsert, LocationInsert } from "@repo/db";
+import { eq } from "drizzle-orm";
 
 export const eventRouter = new Hono();
 
@@ -23,6 +25,40 @@ eventRouter.post("/", async (c) => {
   }
 
   const userId = payload.sub;
+
+  const adminUser = (
+    await db.select().from(admin).where(eq(admin.id, userId))
+  )[0];
+
+  if (!adminUser) {
+    return c.json(
+      {
+        data: { message: "Admin user not found" },
+        status: Status.error,
+      },
+      404
+    );
+  }
+
+  const body = await c.req.json();
+
+  const location = body.location;
+  const event = body.event;
+
+  const locationInsert: LocationInsert = {
+    name: location.name,
+    description: location.description,
+    imageUrl: location.imageUrl,
+  };
+
+  const eventInsert: EventInsert = {
+    eventName: event.eventName,
+    description: event.description,
+    bannerUrl: event.bannerUrl,
+    adminId: userId,
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    locationId: "",
+  };
 
   return c.json({ message: "Event created", userId });
 });
