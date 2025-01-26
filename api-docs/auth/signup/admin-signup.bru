@@ -1,0 +1,17 @@
+meta {
+  name: admin-signup
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/v1/auth/admin/signup
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "phoneNumber": "+918178656358"
+  }
+}

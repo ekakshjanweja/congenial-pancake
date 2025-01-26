@@ -1,0 +1,19 @@
+meta {
+  name: admin-verify-otp
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/v1/auth/admin/signup/verify
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "stormej-admin",
+    "phoneNumber": "+918178656358",
+    "otp": "532178"
+  }
+}
