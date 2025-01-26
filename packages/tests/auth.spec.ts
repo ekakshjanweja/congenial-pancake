@@ -8,7 +8,7 @@ const BACKEND_URL = "http://localhost:8080";
 const BASE_URL = "api/v1";
 const BACKEND_ENDPOINT = `${BACKEND_URL}/${BASE_URL}/auth`;
 
-const PHONE_1 = "+912574956320";
+const PHONE_1 = "+918178656358";
 const NAME_1 = "stormej";
 
 describe("Signup endpoints", () => {
@@ -60,5 +60,7 @@ describe("Signin endpoints", () => {
     );
 
     expect(otpVerificationOne.status).toBe(200);
+
+    await db.delete(user).where(eq(user.phoneNumber, PHONE_1));
   });
 });
