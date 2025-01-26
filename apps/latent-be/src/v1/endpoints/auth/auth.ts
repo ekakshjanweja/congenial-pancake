@@ -6,3 +6,4 @@ export const authRouter = new Hono();
 
 authRouter.route("/signup", signUpAuthRouter);
 authRouter.route("/signin", signInAuthRouter);
+authRouter.route("/admin-signin", signInAuthRouter);

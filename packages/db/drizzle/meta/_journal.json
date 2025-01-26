@@ -50,6 +50,20 @@
       "when": 1737264472894,
       "tag": "0006_busy_red_wolf",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1737876275861,
+      "tag": "0007_sudden_pretty_boy",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1737877117964,
+      "tag": "0008_naive_kabuki",
+      "breakpoints": true
     }
   ]
 }

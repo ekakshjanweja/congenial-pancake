@@ -3,6 +3,7 @@ import { TOTP_SECRET } from "../config/config";
 
 export enum TotpType {
   auth = "AUTH",
+  adminAuth = "ADMIN_AUTH",
 }
 
 export function getTotp(phoneNumber: string, type: TotpType) {

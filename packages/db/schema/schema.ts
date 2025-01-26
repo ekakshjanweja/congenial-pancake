@@ -5,6 +5,7 @@ import { booking } from "./booking";
 import { payment } from "./payment";
 import { seat } from "./seat";
 import { seatType } from "./seat-type";
+import { location } from "./location";
 
 export const schema = {
   user,
@@ -14,4 +15,5 @@ export const schema = {
   payment,
   seat,
   seatType,
+  location,
 };

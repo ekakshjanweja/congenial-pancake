@@ -6,6 +6,7 @@ export * from "./schema/payment";
 export * from "./schema/seat";
 export * from "./schema/seat-type";
 export * from "./schema/tokens";
+export * from "./schema/location";
 
 import { drizzle } from "drizzle-orm/node-postgres";
 import { schema } from "./schema/schema";
