@@ -9,7 +9,7 @@ loadEnv();
 
 const app = new Hono();
 
-app.route("", router);
+app.route("/api/v1", router);
 
 export default {
   port: 8080,
