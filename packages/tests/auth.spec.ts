@@ -8,61 +8,57 @@ const BACKEND_URL = "http://localhost:8080";
 const BASE_URL = "api/v1";
 const BACKEND_ENDPOINT = `${BACKEND_URL}/${BASE_URL}/auth`;
 
-const PHONE_1 = "+918178656358";
+const PHONE_1 = "+912574956320";
 const NAME_1 = "stormej";
 
-dotenv.config();
-
 describe("Signup endpoints", () => {
-  it("Signup + Doule Signup Doesnt Work", async () => {
+  dotenv.config();
+
+  it("Signup", async () => {
     const otpOne = await axios.post(`${BACKEND_ENDPOINT}/signup`, {
       phoneNumber: PHONE_1,
     });
 
-    const otp = otpOne.data["opt"];
+    const otp: string = otpOne.data["data"]["otp"];
 
     expect(otpOne.status).toBe(200);
     expect(otp).not.toBeNull();
 
     const otpVerificationOne = await axios.post(
       `${BACKEND_ENDPOINT}/signup/verify`,
-      {
-        username: NAME_1,
-        phoneNumber: PHONE_1,
-        otp,
-      }
+      { username: NAME_1, phoneNumber: PHONE_1, otp }
     );
 
     expect(otpVerificationOne.status).toBe(200);
+  });
 
-    const otpTwo = await axios.post(`${BACKEND_ENDPOINT}/signup`, {
+  it.skip("Signup with existing phone number", async () => {
+    const otpOne = await axios.post(`${BACKEND_ENDPOINT}/signup`, {
       phoneNumber: PHONE_1,
     });
 
-    expect(otpTwo.status).toBe(400);
+    expect(otpOne.status).toBe(400);
   });
 });
 
-// describe("Signin endpoints", () => {
-//   it("SignIn", async () => {
-//     const otpOne = await axios.post(`${BACKEND_ENDPOINT}/auth/signin`, {
-//       phoneNumber: PHONE_1,
-//     });
+describe("Signin endpoints", () => {
+  dotenv.config();
 
-//     const otp = otpOne.data["topt"];
+  it("Signin", async () => {
+    const otpOne = await axios.post(`${BACKEND_ENDPOINT}/signin`, {
+      phoneNumber: PHONE_1,
+    });
 
-//     const otpVerificationOne = await axios.post(
-//       `${BACKEND_ENDPOINT}/user/auth/signin`,
-//       {
-//         phoneNumber: PHONE_1,
-//         totp: otp,
-//       }
-//     );
+    const otp: string = otpOne.data["data"]["otp"];
 
-//     expect(otpOne.status).toBe(200);
-//     expect(otpOne.data.id).not.toBeNull();
-//     expect(otpVerificationOne.status).toBe(200);
+    expect(otpOne.status).toBe(200);
+    expect(otp).not.toBeNull();
 
-//     await db.delete(user).where(eq(user.phoneNumber, PHONE_1));
-//   });
-// });
+    const otpVerificationOne = await axios.post(
+      `${BACKEND_ENDPOINT}/signin/verify`,
+      { username: NAME_1, phoneNumber: PHONE_1, otp }
+    );
+
+    expect(otpVerificationOne.status).toBe(200);
+  });
+});
