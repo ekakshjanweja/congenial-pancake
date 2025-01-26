@@ -7,6 +7,6 @@ const router = new Hono();
 
 router.route("/health", health);
 router.route("/auth", authRouter);
-router.route("/events", eventRouter);
+router.route("/event", eventRouter);
 
 export default router;

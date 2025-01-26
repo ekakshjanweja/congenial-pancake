@@ -1,0 +1,19 @@
+meta {
+  name: create-event
+  type: http
+  seq: 1
+}
+
+post {
+  url: http://localhost:8080/api/v1/event
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZjdkZTY0Yi02NTdhLTQwNmUtODEzMC0wMjg3NmYyYWU5MGMiLCJyb2xlIjoidXNlciIsImV4cCI6MTczNzkwMjM3NX0.AsDMIJ-MZA9g1YTi30OxF6aT7SoSPZyxQIEXFkTx4Ig
+}
+
+body:json {
+  {}
+}
