@@ -31,4 +31,6 @@ export enum ErrorType {
   UserAlreadyExists = "User already exists! Please sign in.",
   UserNotFound = "User not found! Please sign up first.",
   UserDoesNotExist = "User does not exist! Please sign up first.",
+  UnauthorizedNoAuthheaderFound = "Unauthorized! No Authorization header found.",
+  Unauthorized = "Unauthorized",
 }
