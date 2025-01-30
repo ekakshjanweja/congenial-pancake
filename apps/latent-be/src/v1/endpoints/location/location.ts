@@ -47,6 +47,15 @@ locationRouter.post("/", async (c) => {
   }
 
   try {
+    const existingLocation = await db
+      .select()
+      .from(location)
+      .where(eq(location.name, name));
+
+    if (existingLocation.length > 0) {
+      return c.json(errorResponse(ErrorType.LocationAlreadyExists), 400);
+    }
+
     const [newLocation] = await db.insert(location).values(data).returning();
 
     return c.json(
@@ -55,6 +64,30 @@ locationRouter.post("/", async (c) => {
       }),
       200
     );
+  } catch (error) {
+    return c.json(errorResponse(ErrorType.UnknownError), 400);
+  }
+});
+
+locationRouter.get("/", async (c) => {
+  try {
+    const locations = await db.select().from(location);
+
+    return c.json(successResponse({ locations }), 200);
+  } catch (error) {
+    return c.json(errorResponse(ErrorType.UnknownError), 400);
+  }
+});
+
+locationRouter.get("/:id", async (c) => {
+  const id = c.req.param("id");
+
+  try {
+    const existingLocation = (
+      await db.select().from(location).where(eq(location.id, id))
+    )[0];
+
+    return c.json(successResponse({ location: existingLocation }), 200);
   } catch (error) {
     return c.json(errorResponse(ErrorType.UnknownError), 400);
   }

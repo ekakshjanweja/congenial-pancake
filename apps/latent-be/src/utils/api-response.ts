@@ -38,4 +38,5 @@ export enum ErrorType {
   NotAuthorizedToCreateALocation = "You are not authorized to create a location. Only admins can create locations!",
   InvalidBody = "Invalid body provided",
   UnknownError = "Unknown error occurred",
+  LocationAlreadyExists = "Location already exists",
 }
