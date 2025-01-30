@@ -35,4 +35,7 @@ export enum ErrorType {
   Unauthorized = "Unauthorized",
   NotAuthorizedToCreateAnEvent = "You are not authorized to create an event. Only admins can create events!",
   AdminUserNotFound = "Admin user not found",
+  NotAuthorizedToCreateALocation = "You are not authorized to create a location. Only admins can create locations!",
+  InvalidBody = "Invalid body provided",
+  UnknownError = "Unknown error occurred",
 }
