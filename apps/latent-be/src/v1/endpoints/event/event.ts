@@ -1,8 +1,9 @@
 import { Hono } from "hono";
 import { Roles } from "../../../enums/roles";
 import { Status } from "../../../enums/status";
-import { admin, AdminSelect, db, EventInsert, LocationInsert } from "@repo/db";
+import { admin, db, EventInsert, LocationInsert } from "@repo/db";
 import { eq } from "drizzle-orm";
+import { errorResponse, ErrorType } from "../../../utils/api-response";
 
 export const eventRouter = new Hono();
 
@@ -12,16 +13,7 @@ eventRouter.post("/", async (c) => {
   const role = payload.role;
 
   if (role !== Roles.admin) {
-    return c.json(
-      {
-        data: {
-          message:
-            "You are not authorized to create an event. Only admins can create events!",
-        },
-        status: Status.error,
-      },
-      401
-    );
+    return c.json(errorResponse(ErrorType.NotAuthorizedToCreateAnEvent), 401);
   }
 
   const userId = payload.sub;
@@ -31,13 +23,7 @@ eventRouter.post("/", async (c) => {
   )[0];
 
   if (!adminUser) {
-    return c.json(
-      {
-        data: { message: "Admin user not found" },
-        status: Status.error,
-      },
-      404
-    );
+    return c.json(errorResponse(ErrorType.AdminUserNotFound), 404);
   }
 
   const body = await c.req.json();

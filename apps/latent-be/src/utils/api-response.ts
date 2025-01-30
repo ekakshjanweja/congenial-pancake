@@ -33,4 +33,6 @@ export enum ErrorType {
   UserDoesNotExist = "User does not exist! Please sign up first.",
   UnauthorizedNoAuthheaderFound = "Unauthorized! No Authorization header found.",
   Unauthorized = "Unauthorized",
+  NotAuthorizedToCreateAnEvent = "You are not authorized to create an event. Only admins can create events!",
+  AdminUserNotFound = "Admin user not found",
 }
