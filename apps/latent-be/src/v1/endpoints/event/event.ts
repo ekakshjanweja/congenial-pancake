@@ -1,9 +1,13 @@
 import { Hono } from "hono";
 import { Roles } from "../../../enums/roles";
-import { Status } from "../../../enums/status";
-import { admin, db, EventInsert, LocationInsert } from "@repo/db";
+import { admin, db, EventInsert, location, event } from "@repo/db";
 import { eq } from "drizzle-orm";
-import { errorResponse, ErrorType } from "../../../utils/api-response";
+import {
+  errorResponse,
+  ErrorType,
+  successResponse,
+} from "../../../utils/api-response";
+import { CreateEventSchema } from "../../../../../../packages/common/src/types";
 
 export const eventRouter = new Hono();
 
@@ -28,23 +32,83 @@ eventRouter.post("/", async (c) => {
 
   const body = await c.req.json();
 
-  const location = body.location;
-  const event = body.event;
+  const locationId = body.location;
+  const eventData = body.event;
 
-  const locationInsert: LocationInsert = {
-    name: location.name,
-    description: location.description,
-    imageUrl: location.imageUrl,
-  };
+  if (!locationId) {
+    return c.json(errorResponse(ErrorType.LocationIdRequired), 400);
+  }
+
+  const existingLocation = (
+    await db.select().from(location).where(eq(location.id, locationId))
+  )[0];
+
+  if (!existingLocation) {
+    return c.json(errorResponse(ErrorType.LocationDoesNotExist), 400);
+  }
 
   const eventInsert: EventInsert = {
-    eventName: event.eventName,
-    description: event.description,
-    bannerUrl: event.bannerUrl,
+    eventName: eventData.eventName,
+    description: eventData.description,
+    bannerUrl: eventData.bannerUrl,
     adminId: userId,
     endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
-    locationId: "",
+    locationId: existingLocation.id,
   };
 
-  return c.json({ message: "Event created", userId });
+  const { data, success } = CreateEventSchema.safeParse(eventInsert);
+
+  if (!success) {
+    return c.json(errorResponse(ErrorType.InvalidBody), 400);
+  }
+
+  try {
+    const existingEvent = await db
+      .select()
+      .from(event)
+      .where(eq(event.eventName, eventInsert.eventName));
+
+    if (existingEvent.length > 0) {
+      return c.json(errorResponse(ErrorType.EventAlreadyExists), 400);
+    }
+
+    const [newEvent] = await db.insert(event).values(data).returning();
+
+    return c.json(
+      successResponse({
+        event: newEvent,
+      }),
+      200
+    );
+  } catch (error) {
+    return c.json(errorResponse(error as string), 400);
+  }
+});
+
+eventRouter.get("/", async (c) => {
+  try {
+    const events = await db.select().from(event);
+
+    return c.json(successResponse({ events }), 200);
+  } catch (error) {
+    return c.json(errorResponse(ErrorType.UnknownError), 400);
+  }
+});
+
+eventRouter.get("/:id", async (c) => {
+  const id = c.req.param("id");
+
+  try {
+    const existingEvent = (
+      await db.select().from(event).where(eq(event.id, id))
+    )[0];
+
+    if (!existingEvent) {
+      return c.json(errorResponse(ErrorType.ExistingEventNotFound), 404);
+    }
+
+    return c.json(successResponse({ event: existingEvent }), 200);
+  } catch (error) {
+    return c.json(errorResponse(ErrorType.UnknownError), 400);
+  }
 });

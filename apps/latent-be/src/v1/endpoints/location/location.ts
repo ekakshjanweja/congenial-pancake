@@ -65,7 +65,7 @@ locationRouter.post("/", async (c) => {
       200
     );
   } catch (error) {
-    return c.json(errorResponse(ErrorType.UnknownError), 400);
+    return c.json(errorResponse(error as string), 400);
   }
 });
 

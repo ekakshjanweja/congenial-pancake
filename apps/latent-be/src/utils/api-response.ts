@@ -13,8 +13,8 @@ export function successResponse<T>(data: T): ApiResponse<T> {
 }
 
 export function errorResponse<T>(
-  errorType: ErrorType
-): ApiResponse<{ message: ErrorType }> {
+  errorType: ErrorType | string
+): ApiResponse<{ message: ErrorType | string }> {
   return {
     data: {
       message: errorType,
@@ -39,4 +39,8 @@ export enum ErrorType {
   InvalidBody = "Invalid body provided",
   UnknownError = "Unknown error occurred",
   LocationAlreadyExists = "Location already exists",
+  LocationIdRequired = "Location ID is required",
+  LocationDoesNotExist = "Location does not exist",
+  EventAlreadyExists = "Event already exists",
+  ExistingEventNotFound = "Existing event not found",
 }
