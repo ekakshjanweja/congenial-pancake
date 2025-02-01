@@ -95,13 +95,7 @@ eventRouter.post("/", async (c) => {
 
 eventRouter.get("/", async (c) => {
   try {
-    const events = await db
-      .select()
-      .from(event)
-      .fullJoin(booking, eq(event.id, booking.eventId))
-      .fullJoin(location, eq(event.locationId, location.id))
-      .fullJoin(seatType, eq(event.id, seatType.eventId));
-
+    const events = await db.select().from(event);
     return c.json(successResponse({ events }), 200);
   } catch (error) {
     return c.json(errorResponse(ErrorType.UnknownError), 400);
@@ -113,13 +107,7 @@ eventRouter.get("/:id", async (c) => {
 
   try {
     const existingEvent = (
-      await db
-        .select()
-        .from(event)
-        .where(eq(event.id, id))
-        .fullJoin(booking, eq(event.id, booking.eventId))
-        .fullJoin(location, eq(event.locationId, location.id))
-        .fullJoin(seatType, eq(event.id, seatType.eventId))
+      await db.select().from(event).where(eq(event.id, id))
     )[0];
 
     if (!existingEvent) {

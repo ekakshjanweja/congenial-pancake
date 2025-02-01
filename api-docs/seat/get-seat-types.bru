@@ -1,0 +1,19 @@
+meta {
+  name: get-seat-types
+  type: http
+  seq: 2
+}
+
+get {
+  url: http://localhost:8080/api/v1/seat/seat-type?eventId=acfa4b96-aeb9-4095-97ac-b588f3d28a4c
+  body: none
+  auth: none
+}
+
+params:query {
+  eventId: acfa4b96-aeb9-4095-97ac-b588f3d28a4c
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NWM2YjBjZC01MDM2LTRiMjgtYTU4YS1jZTJiMTk0MTUwNzAiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3Mzg0MDQ4NDB9.dCzhU64thHTTzzYQ3px-YlvoB6Gi7eQbhUcWdCC_6g8
+}

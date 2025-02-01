@@ -7,7 +7,6 @@ export const seatType = pgTable("seat_type", {
   id: uuid("id").defaultRandom().primaryKey(),
   seatTypeName: text("seat_type_name").notNull(),
   description: text("description").notNull(),
-  eventName: text("event_name").notNull(),
   eventId: uuid("event_id").notNull(),
   price: integer("price").notNull(),
   capacity: integer("capacity").notNull().default(1),

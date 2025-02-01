@@ -93,6 +93,6 @@ locationRouter.get("/:id", async (c) => {
 
     return c.json(successResponse({ location: existingLocation }), 200);
   } catch (error) {
-    return c.json(errorResponse(ErrorType.UnknownError), 400);
+    return c.json(errorResponse(error as string), 400);
   }
 });

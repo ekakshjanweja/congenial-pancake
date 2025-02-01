@@ -45,4 +45,6 @@ export enum ErrorType {
   ExistingEventNotFound = "Existing event not found",
   NotAuthorizedToUpdateAnEvent = "You are not authorized to update an event. Only admins can update events!",
   NotAuthorizedToCreateASeat = "You are not authorized to create a seat. Only admins can create seats!",
+  SeatTypeAlreadyExists = "Seat type already exists",
+  InvalidQuery = "Invalid query provided",
 }
