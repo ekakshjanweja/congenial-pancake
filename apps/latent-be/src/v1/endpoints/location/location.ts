@@ -5,7 +5,7 @@ import {
   ErrorType,
   successResponse,
 } from "../../../utils/api-response";
-import { admin, db, location, LocationInsert } from "@repo/db";
+import { admin, db, event, location, LocationInsert } from "@repo/db";
 import { eq } from "drizzle-orm";
 import { CreateLocationSchema } from "@repo/common";
 
@@ -84,7 +84,11 @@ locationRouter.get("/:id", async (c) => {
 
   try {
     const existingLocation = (
-      await db.select().from(location).where(eq(location.id, id))
+      await db
+        .select()
+        .from(location)
+        .where(eq(location.id, id))
+        .fullJoin(event, eq(event.locationId, location.id))
     )[0];
 
     return c.json(successResponse({ location: existingLocation }), 200);
