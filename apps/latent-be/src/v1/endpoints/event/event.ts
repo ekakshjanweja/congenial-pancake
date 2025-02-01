@@ -131,3 +131,63 @@ eventRouter.get("/:id", async (c) => {
     return c.json(errorResponse(ErrorType.UnknownError), 400);
   }
 });
+
+eventRouter.put("/:id", async (c) => {
+  const payload = c.get("jwtPayload");
+
+  const role = payload.role;
+
+  if (role !== Roles.admin) {
+    return c.json(errorResponse(ErrorType.NotAuthorizedToUpdateAnEvent), 401);
+  }
+
+  const userId = payload.sub;
+
+  const adminUser = (
+    await db.select().from(admin).where(eq(admin.id, userId))
+  )[0];
+
+  if (!adminUser) {
+    return c.json(errorResponse(ErrorType.AdminUserNotFound), 404);
+  }
+
+  const id = c.req.param("id");
+
+  const body = await c.req.json();
+
+  const eventData = body.event;
+
+  const existingEvent = (
+    await db.select().from(event).where(eq(event.id, id))
+  )[0];
+
+  if (!existingEvent) {
+    return c.json(errorResponse(ErrorType.ExistingEventNotFound), 404);
+  }
+
+  const eventUpdate: Partial<EventInsert> = {
+    eventName: eventData.eventName,
+    description: eventData.description,
+    bannerUrl: eventData.bannerUrl,
+    adminId: userId,
+    endDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+    locationId: existingEvent.locationId,
+  };
+
+  try {
+    const [updatedEvent] = await db
+      .update(event)
+      .set(eventUpdate)
+      .where(eq(event.id, id))
+      .returning();
+
+    return c.json(
+      successResponse({
+        event: updatedEvent,
+      }),
+      200
+    );
+  } catch (error) {
+    return c.json(errorResponse(error as string), 400);
+  }
+});

@@ -43,4 +43,6 @@ export enum ErrorType {
   LocationDoesNotExist = "Location does not exist",
   EventAlreadyExists = "Event already exists",
   ExistingEventNotFound = "Existing event not found",
+  NotAuthorizedToUpdateAnEvent = "You are not authorized to update an event. Only admins can update events!",
+  NotAuthorizedToCreateASeat = "You are not authorized to create a seat. Only admins can create seats!",
 }
