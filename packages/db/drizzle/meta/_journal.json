@@ -64,6 +64,20 @@
       "when": 1737877117964,
       "tag": "0008_naive_kabuki",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1738387114359,
+      "tag": "0009_minor_screwball",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1738389368910,
+      "tag": "0010_volatile_ken_ellis",
+      "breakpoints": true
     }
   ]
 }

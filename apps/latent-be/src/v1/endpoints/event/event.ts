@@ -1,6 +1,14 @@
 import { Hono } from "hono";
 import { Roles } from "../../../enums/roles";
-import { admin, db, EventInsert, location, event } from "@repo/db";
+import {
+  admin,
+  db,
+  EventInsert,
+  location,
+  event,
+  booking,
+  seatType,
+} from "@repo/db";
 import { eq } from "drizzle-orm";
 import {
   errorResponse,
@@ -87,7 +95,12 @@ eventRouter.post("/", async (c) => {
 
 eventRouter.get("/", async (c) => {
   try {
-    const events = await db.select().from(event);
+    const events = await db
+      .select()
+      .from(event)
+      .fullJoin(booking, eq(event.id, booking.eventId))
+      .fullJoin(location, eq(event.locationId, location.id))
+      .fullJoin(seatType, eq(event.id, seatType.eventId));
 
     return c.json(successResponse({ events }), 200);
   } catch (error) {
@@ -100,7 +113,13 @@ eventRouter.get("/:id", async (c) => {
 
   try {
     const existingEvent = (
-      await db.select().from(event).where(eq(event.id, id))
+      await db
+        .select()
+        .from(event)
+        .where(eq(event.id, id))
+        .fullJoin(booking, eq(event.id, booking.eventId))
+        .fullJoin(location, eq(event.locationId, location.id))
+        .fullJoin(seatType, eq(event.id, seatType.eventId))
     )[0];
 
     if (!existingEvent) {

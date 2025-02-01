@@ -4,7 +4,7 @@ import { event } from "./event";
 import { user } from "./user";
 import { seat } from "./seat";
 
-export const booking = pgTable("boooking", {
+export const booking = pgTable("booking", {
   id: uuid("id").defaultRandom().primaryKey(),
   eventId: uuid("event_id").notNull(),
   userId: uuid("user_id").notNull(),

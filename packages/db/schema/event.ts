@@ -4,6 +4,7 @@ import { admin } from "./admin";
 import { booking } from "./booking";
 import { payment } from "./payment";
 import { location } from "./location";
+import { seatType } from "./seat-type";
 
 export const event = pgTable("event", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -28,6 +29,7 @@ export const eventRelations = relations(event, ({ one, many }) => ({
   }),
   booking: many(booking),
   payment: many(payment),
+  seatType: many(seatType),
 }));
 
 export type EventSelect = typeof event.$inferSelect;
